@@ -1,0 +1,11 @@
+#version 330 core
+
+in vec3 InVertex;  //w will be set to 1.0 automatically
+
+void main(){
+
+    gl_Position.xyz = InVertex;
+    gl_Position.w = 1.0;
+
+}
+
