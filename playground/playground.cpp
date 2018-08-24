@@ -12,6 +12,7 @@ using namespace glm;
 #include <glm/gtx/transform.hpp>
 
 #include "shader.hpp"
+#include "texture.h"
 
 GLuint InitCube(GLuint programID) {
     GLuint vertexArrayID;
@@ -60,57 +61,58 @@ GLuint InitCube(GLuint programID) {
     glGenBuffers(1, &vertexbuffer);
     glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
     glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
-    GLint vertexLoc = glGetAttribLocation(programID, "InVertex");
-    glVertexAttribPointer(vertexLoc, 3, GL_FLOAT, GL_FALSE, 0, 0);
-    glEnableVertexAttribArray(vertexLoc);
+    GLint programVertexLocation = glGetAttribLocation(programID, "InVertex");
+    glVertexAttribPointer(programVertexLocation, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(programVertexLocation);
     
-    // One color for each vertex. They were generated randomly.
-    static const GLfloat g_color_buffer_data[] = {
-        0.583f,  0.771f,  0.014f,
-        0.609f,  0.115f,  0.436f,
-        0.327f,  0.483f,  0.844f,
-        0.822f,  0.569f,  0.201f,
-        0.435f,  0.602f,  0.223f,
-        0.310f,  0.747f,  0.185f,
-        0.597f,  0.770f,  0.761f,
-        0.559f,  0.436f,  0.730f,
-        0.359f,  0.583f,  0.152f,
-        0.483f,  0.596f,  0.789f,
-        0.559f,  0.861f,  0.639f,
-        0.195f,  0.548f,  0.859f,
-        0.014f,  0.184f,  0.576f,
-        0.771f,  0.328f,  0.970f,
-        0.406f,  0.615f,  0.116f,
-        0.676f,  0.977f,  0.133f,
-        0.971f,  0.572f,  0.833f,
-        0.140f,  0.616f,  0.489f,
-        0.997f,  0.513f,  0.064f,
-        0.945f,  0.719f,  0.592f,
-        0.543f,  0.021f,  0.978f,
-        0.279f,  0.317f,  0.505f,
-        0.167f,  0.620f,  0.077f,
-        0.347f,  0.857f,  0.137f,
-        0.055f,  0.953f,  0.042f,
-        0.714f,  0.505f,  0.345f,
-        0.783f,  0.290f,  0.734f,
-        0.722f,  0.645f,  0.174f,
-        0.302f,  0.455f,  0.848f,
-        0.225f,  0.587f,  0.040f,
-        0.517f,  0.713f,  0.338f,
-        0.053f,  0.959f,  0.120f,
-        0.393f,  0.621f,  0.362f,
-        0.673f,  0.211f,  0.457f,
-        0.820f,  0.883f,  0.371f,
-        0.982f,  0.099f,  0.879f
+    loadBMP_custom("./uvtemplate.bmp");
+    
+    // Two UV coordinatesfor each vertex. They were created with Blender. You'll learn shortly how to do this yourself.
+    static const GLfloat g_uv_buffer_data[] = {
+        0.000059f, 1.0f-0.000004f,
+        0.000103f, 1.0f-0.336048f,
+        0.335973f, 1.0f-0.335903f,
+        1.000023f, 1.0f-0.000013f,
+        0.667979f, 1.0f-0.335851f,
+        0.999958f, 1.0f-0.336064f,
+        0.667979f, 1.0f-0.335851f,
+        0.336024f, 1.0f-0.671877f,
+        0.667969f, 1.0f-0.671889f,
+        1.000023f, 1.0f-0.000013f,
+        0.668104f, 1.0f-0.000013f,
+        0.667979f, 1.0f-0.335851f,
+        0.000059f, 1.0f-0.000004f,
+        0.335973f, 1.0f-0.335903f,
+        0.336098f, 1.0f-0.000071f,
+        0.667979f, 1.0f-0.335851f,
+        0.335973f, 1.0f-0.335903f,
+        0.336024f, 1.0f-0.671877f,
+        1.000004f, 1.0f-0.671847f,
+        0.999958f, 1.0f-0.336064f,
+        0.667979f, 1.0f-0.335851f,
+        0.668104f, 1.0f-0.000013f,
+        0.335973f, 1.0f-0.335903f,
+        0.667979f, 1.0f-0.335851f,
+        0.335973f, 1.0f-0.335903f,
+        0.668104f, 1.0f-0.000013f,
+        0.336098f, 1.0f-0.000071f,
+        0.000103f, 1.0f-0.336048f,
+        0.000004f, 1.0f-0.671870f,
+        0.336024f, 1.0f-0.671877f,
+        0.000103f, 1.0f-0.336048f,
+        0.336024f, 1.0f-0.671877f,
+        0.335973f, 1.0f-0.335903f,
+        0.667969f, 1.0f-0.671889f,
+        1.000004f, 1.0f-0.671847f,
+        0.667979f, 1.0f-0.335851f
     };
-    GLuint colorbuffer;
-    glGenBuffers(1, &colorbuffer);
-    glBindBuffer(GL_ARRAY_BUFFER, colorbuffer);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(g_color_buffer_data),
-                 g_color_buffer_data, GL_STATIC_DRAW);
-    GLint vertexColor = glGetAttribLocation(programID, "InColor");
-    glVertexAttribPointer(vertexColor, 3, GL_FLOAT, GL_FALSE, 0, 0);
-    glEnableVertexAttribArray(vertexColor);
+    GLuint uvbuffer;
+    glGenBuffers(1, &uvbuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(g_uv_buffer_data), g_uv_buffer_data, GL_STATIC_DRAW);
+    GLint programVertexUVLocation = glGetAttribLocation(programID, "InUV");
+    glVertexAttribPointer(programVertexUVLocation, 2, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(programVertexUVLocation);
     
     // Make sure the VAO is not changed from outside code
     glBindVertexArray(0);
@@ -132,9 +134,9 @@ GLuint InitTriangle(GLuint programID) {
     glGenBuffers(1, &vertexbuffer);
     glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
     glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
-    GLint vertexLoc = glGetAttribLocation(programID, "InVertex");
-    glVertexAttribPointer(vertexLoc, 3, GL_FLOAT, GL_FALSE, 0, 0);
-    glEnableVertexAttribArray(vertexLoc);
+    GLint programVertexLocation = glGetAttribLocation(programID, "InVertex");
+    glVertexAttribPointer(programVertexLocation, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(programVertexLocation);
     
     // One color for each vertex. They were generated randomly.
     static const GLfloat g_color_buffer_data[] = {
@@ -147,9 +149,9 @@ GLuint InitTriangle(GLuint programID) {
     glBindBuffer(GL_ARRAY_BUFFER, colorbuffer);
     glBufferData(GL_ARRAY_BUFFER, sizeof(g_color_buffer_data),
                  g_color_buffer_data, GL_STATIC_DRAW);
-    GLint vertexColor = glGetAttribLocation(programID, "InColor");
-    glVertexAttribPointer(vertexColor, 3, GL_FLOAT, GL_FALSE, 0, 0);
-    glEnableVertexAttribArray(vertexColor);
+    GLint programVertexColorLocation = glGetAttribLocation(programID, "InColor");
+    glVertexAttribPointer(programVertexColorLocation, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(programVertexColorLocation);
     
     // Make sure the VAO is not changed from outside code
     glBindVertexArray(0);
@@ -186,6 +188,9 @@ int main( void )
 		return -1;
 	}
 	glfwMakeContextCurrent(window);
+    
+    // Set vSync
+    glfwSwapInterval(1);
 
 	// Initialize GLEW
     glewExperimental = true; // Needed for core profile
@@ -199,14 +204,19 @@ int main( void )
 	// Ensure we can capture the escape key being pressed below
 	glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
     
-    // Create and compile our GLSL program from the shaders
-    GLuint programID = LoadShaders("SimpleVertexShader.vertexshader", "SimpleFragmentShader.fragmentshader" );
-    
-    GLuint cubeVertexArrayID = InitCube(programID);
+    GLuint simpleProgramID = LoadShaders("SimpleVertexShader.vertexshader",
+                                         "SimpleFragmentShader.fragmentshader");
+    GLuint simpleProgramMatrixLocation = glGetUniformLocation(simpleProgramID,
+                                                           "MVP");
+    GLuint cubeVertexArrayID = InitCube(simpleProgramID);
     // Model matrix : an identity matrix (model will be at the origin)
     glm::mat4 cubeModelTransform = glm::mat4(1.0f);
     
-    GLuint triangleVertexArrayID = InitTriangle(programID);
+    GLuint colorProgramID = LoadShaders("ColorVertexShader.vertexshader",
+                                        "ColorFragmentShader.fragmentshader" );
+    GLuint colorProgramMatrixLocation = glGetUniformLocation(colorProgramID,
+                                                             "MVP");
+    GLuint triangleVertexArrayID = InitTriangle(colorProgramID);
     glm::vec3 triangleScale(0.5f, 0.5f, 0.5f);
     
     // Camera matrix
@@ -215,12 +225,6 @@ int main( void )
                                  glm::vec3(0,0,0), // and looks at the origin
                                  glm::vec3(0,1,0)  // Head is up (set to 0,-1,0 to look upside-down)
                                  );
-    
-
-    
-    // Get a handle for our "MVP" uniform
-    // Only during the initialisation
-    GLuint MatrixID = glGetUniformLocation(programID, "MVP");
     
     // Dark blue background
     glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
@@ -231,26 +235,24 @@ int main( void )
     glDepthFunc(GL_LESS);
 
 	do{
-        glfwGetWindowSize(window, &windowWidth, &windowHeight);
-        
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
-        // Both objects use the same shaders.
-        glUseProgram(programID);
-        
+        glfwGetWindowSize(window, &windowWidth, &windowHeight);
         // Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
         glm::mat4 ProjectionTransform = glm::perspective(glm::radians(45.0f), (float) windowWidth / (float)windowHeight, 0.1f, 100.0f);
         
+        glUseProgram(simpleProgramID);
         glm::mat4 cubeMVP = ProjectionTransform * ViewTransform * cubeModelTransform;
-        glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &cubeMVP[0][0]);
+        glUniformMatrix4fv(simpleProgramMatrixLocation, 1, GL_FALSE, &cubeMVP[0][0]);
         glBindVertexArray(cubeVertexArrayID);
         glDrawArrays(GL_TRIANGLES, 0, 12*3);
         
+        glUseProgram(colorProgramID);
         double currentTime = glfwGetTime();
         glm::vec3 position(0.0, 1.5 + sin(currentTime)/2.0, 0.0);
         glm::mat4 triangleModelTransform = glm::translate(glm::scale(triangleScale), position);
         glm::mat4 triangleMVP = ProjectionTransform * ViewTransform * triangleModelTransform;
-        glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &triangleMVP[0][0]);
+        glUniformMatrix4fv(colorProgramMatrixLocation, 1, GL_FALSE, &triangleMVP[0][0]);
         glBindVertexArray(triangleVertexArrayID);
         glDrawArrays(GL_TRIANGLES, 0, 3);
 

@@ -1,0 +1,13 @@
+#version 330 core
+
+in vec3 InVertex;
+in vec3 InColor;
+
+out vec3 fragmentColor;
+
+uniform mat4 MVP;
+
+void main(){
+    gl_Position = MVP * vec4(InVertex,1);
+    fragmentColor = InColor;
+}
